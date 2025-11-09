@@ -1,0 +1,7 @@
+{
+  "name": "Copy of AURA-WEAR: Holographic Tech Boutique",
+  "description": "An immersive e-commerce experience for a futuristic techwear clothing brand, featuring a holographic UI, a dynamic shopping cart, and an AI-powered style consultant to help you craft the perfect cyber-chic look.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}

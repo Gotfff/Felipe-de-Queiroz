@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AURA-WEAR: Holographic Tech Boutique</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  
+  <style>
+    /* ------------------- */
+    /* --- GLOBAL STYLES --- */
+    /* ------------------- */
+    :root {
+      --bg-color: #0a0a14;
+      --primary-text: #e0e0e0;
+      --accent-color: #00ffff;
+      --accent-glow: rgba(0, 255, 255, 0.5);
+      --secondary-color: #f0f;
+      --border-color: rgba(0, 255, 255, 0.2);
+      --card-bg: rgba(20, 20, 40, 0.5);
+      --font-family: 'Exo 2', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--primary-text);
+      font-family: var(--font-family);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    .App {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    main {
+      flex-grow: 1;
+      padding: 2rem;
+    }
+    
+    section {
+      padding: 4rem 0;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--accent-color);
+      text-shadow: 0 0 10px var(--accent-glow);
+    }
+    
+    button {
+      font-family: var(--font-family);
+      cursor: pointer;
+      border: 1px solid var(--accent-color);
+      background-color: transparent;
+      color: var(--accent-color);
+      padding: 0.8rem 1.5rem;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    button:hover:not(:disabled) {
+      background-color: var(--accent-color);
+      color: var(--bg-color);
+      box-shadow: 0 0 15px var(--accent-glow);
+    }
+    
+    button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    a {
+      color: var(--accent-color);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    a:hover {
+      text-shadow: 0 0 8px var(--accent-glow);
+    }
+
+
+    /* ------------------- */
+    /* --- PARTICLES BG --- */
+    /* ------------------- */
+    .particles-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: -1;
+    }
+    
+    @keyframes particle-anim {
+      from {
+        transform: translate(var(--x-start), var(--y-start));
+        opacity: 0.8;
+      }
+      to {
+        transform: translate(var(--x-end), var(--y-end));
+        opacity: 0;
+      }
+    }
+
+    .particle {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: var(--size);
+      height: var(--size);
+      background: var(--accent-color);
+      border-radius: 50%;
+      filter: blur(1px);
+      animation-name: particle-anim;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+
+    /* ------------------- */
+    /* ---   HEADER    --- */
+    /* ------------------- */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10, 10, 20, 0.8);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    
+    @keyframes logo-glow {
+        0%, 100% { text-shadow: 0 0 5px var(--accent-glow); }
+        50% { text-shadow: 0 0 15px var(--accent-glow); }
+    }
+
+    .logo span {
+      color: var(--accent-color);
+      animation: logo-glow 2.5s ease-in-out infinite;
+    }
+
+    .navbar nav {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .nav-btn {
+      background: none;
+      border: none;
+      color: var(--primary-text);
+      padding: 0;
+      cursor: pointer;
+      transition: color 0.3s ease, transform 0.3s ease;
+    }
+    .nav-btn:hover {
+        color: var(--accent-color);
+        transform: scale(1.1);
+    }
+
+    /* ------------------- */
+    /* -- PRODUCT GRID --- */
+    /* ------------------- */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+
+    .product-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      backdrop-filter: blur(5px);
+    }
+
+    .product-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 10px 20px rgba(0, 255, 255, 0.2);
+    }
+
+    .product-img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+    }
+
+    .product-info {
+      padding: 1.5rem;
+    }
+    .product-info h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+    .price {
+      color: var(--accent-color);
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+    .add-to-cart {
+      width: 100%;
+      font-weight: bold;
+    }
+
+    /* ------------------- */
+    /* --- AI ASSISTANT -- */
+    /* ------------------- */
+    .ai-recommendation {
+      text-align: center;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      padding: 3rem;
+      border-radius: 8px;
+    }
+
+    .cta-btn {
+      font-size: 1.2rem;
+      padding: 1rem 2.5rem;
+      font-weight: bold;
+    }
+
+    #ai-suggestion {
+      margin-top: 2rem;
+      text-align: left;
+      line-height: 1.8;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+      background: rgba(0,0,0,0.3);
+      padding: 1.5rem;
+      border-radius: 4px;
+      min-height: 100px;
+    }
+    
+    #ai-suggestion strong {
+        color: var(--accent-color);
+    }
+
+    /* ------------------- */
+    /* ---    MODALS   --- */
+    /* ------------------- */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+      z-index: 1000;
+    }
+
+    .modal.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-content {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      padding: 2rem;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 600px;
+      position: relative;
+      box-shadow: 0 0 30px var(--accent-glow);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      color: var(--primary-text);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    .close:hover {
+      color: var(--accent-color);
+    }
+    
+    .modal-content h2 {
+        text-align: center;
+        margin-bottom: 2rem;
+        color: var(--accent-color);
+    }
+    
+    /* ------------------- */
+    /* -- FILTER MODAL --- */
+    /* ------------------- */
+    .filter-modal .modal-content {
+        max-width: 400px;
+    }
+    .filter-options {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    .filter-option {
+        width: 100%;
+        text-align: left;
+        padding: 1rem;
+        background-color: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border-color);
+        color: var(--primary-text);
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+        font-size: 1rem;
+    }
+    .filter-option:hover {
+        background-color: rgba(0, 255, 255, 0.1);
+        border-color: var(--accent-color);
+    }
+    .filter-option.active {
+        background-color: var(--accent-color);
+        color: var(--bg-color);
+        font-weight: bold;
+        border-color: var(--accent-color);
+    }
+
+    /* === CARRINHO 3D com ÍCONE 🛒 === */
+    #cart-3d-container {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 90px;
+      height: 90px;
+      z-index: 999;
+      cursor: pointer;
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: 0 0 40px rgba(0, 255, 255, 0.6), 0 0 80px rgba(255, 0, 170, 0.4);
+      border: 3px solid rgba(0, 255, 255, 0.3);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    #cart-3d-container:hover {
+      transform: scale(1.15);
+      box-shadow: 0 0 60px rgba(0, 255, 255, 0.9), 0 0 120px rgba(255, 0, 170, 0.7);
+    }
+
+    #cart-3d-canvas {
+      width: 100%;
+      height: 100%;
+      background: transparent;
+    }
+
+    #cart-3d-count {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background: #ff0066;
+      color: white;
+      font-weight: bold;
+      font-size: 0.9rem;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 3px solid white;
+      box-shadow: 0 0 15px #ff0066;
+      animation: pulse-count 2s infinite;
+      z-index: 10;
+    }
+
+    @keyframes pulse-count {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.25); }
+    }
+     
+    /* ------------------- */
+    /* -- SHOPPING CART -- */
+    /* ------------------- */
+    #cart-items {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    
+    .cart-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        background: rgba(0,0,0,0.2);
+        border-radius: 4px;
+    }
+    
+    .quantity-btn, .trash-btn {
+        background: none;
+        border: 1px solid var(--border-color);
+        width: 32px;
+        height: 32px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+    }
+    .quantity-btn:hover, .trash-btn:hover {
+        background: var(--border-color);
+        color: var(--accent-color);
+    }
+    
+    .total {
+        text-align: right;
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .checkout-btn {
+        width: 100%;
+        padding: 1rem;
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+    
+    /* Payment Modal Specifics */
+    .payment-animation {
+      height: 150px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 2rem 0;
+      position: relative;
+    }
+    .scanner {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      border: 2px solid var(--accent-color);
+      position: relative;
+    }
+    .scanner::before, .scanner::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    .scanner::before {
+      width: 100%;
+      height: 100%;
+      border: 2px solid var(--accent-color);
+      animation-delay: 1s;
+    }
+    .scanner::after {
+      width: 0;
+      height: 2px;
+      background: var(--accent-color);
+      animation: scan 3s infinite linear;
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    @keyframes pulse {
+      0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.5; }
+      50% { opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(1.2); opacity: 0; }
+    }
+    @keyframes scan {
+      0% { top: 0; width: 150px; }
+      50% { top: 150px; width: 150px; }
+      100% { top: 0; width: 150px; }
+    }
+    
+    .confirm-btn {
+        width: 100%;
+    }
+
+    /* ------------------- */
+    /* -- PRODUCT DETAIL - */
+    /* ------------------- */
+    .product-detail .modal-content { max-width: 900px; }
+    .product-detail-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: center;
+    }
+    .product-detail-image {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+    }
+    .product-detail-info h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: var(--accent-color);
+    }
+    .product-category-badge {
+      display: inline-block;
+      background: var(--accent-color);
+      color: var(--bg-color);
+      padding: 0.2rem 0.8rem;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    .product-description {
+        margin-bottom: 2rem;
+    }
+    .product-detail-actions {
+      display: flex;
+      gap: 1rem;
+    }
+    .ar-btn {
+      flex-grow: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      border: 1px solid var(--accent-color);
+      color: var(--accent-color);
+      padding: 0.8rem 1.5rem;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .ar-btn:hover {
+      background-color: var(--accent-color);
+      color: var(--bg-color);
+      box-shadow: 0 0 15px var(--accent-glow);
+    }
+    .ar-btn svg { width: 24px; height: 24px; }
+
+
+    /* ------------------- */
+    /* ---    TOAST    --- */
+    /* ------------------- */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--accent-color);
+      color: var(--bg-color);
+      padding: 1rem 2rem;
+      border-radius: 4px;
+      font-weight: bold;
+      opacity: 0;
+      transition: transform 0.5s ease, opacity 0.5s ease;
+      z-index: 1002;
+    }
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+    
+    /* ------------------- */
+    /* --- VOICE CONTROL - */
+    /* ------------------- */
+    .voice-control-btn {
+      position: fixed;
+      bottom: 30px;
+      left: 30px;
+      width: 70px;
+      height: 70px;
+      background: var(--card-bg);
+      border: 2px solid var(--border-color);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      z-index: 998;
+      transition: all 0.3s ease;
+    }
+
+    .voice-control-btn:hover {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 15px var(--accent-glow);
+    }
+
+    .voice-control-btn svg {
+      width: 32px;
+      height: 32px;
+      color: var(--primary-text);
+      transition: color 0.3s ease;
+    }
+
+    .voice-control-btn:hover svg {
+      color: var(--accent-color);
+    }
+
+    .voice-control-btn.listening {
+      border-color: var(--secondary-color);
+      animation: pulse-voice 1.5s infinite;
+    }
+    
+    .voice-control-btn.listening svg {
+      color: var(--secondary-color);
+    }
+    
+    @keyframes pulse-voice {
+      0% { box-shadow: 0 0 0 0 rgba(255, 0, 255, 0.7); }
+      70% { box-shadow: 0 0 0 20px rgba(255, 0, 255, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(255, 0, 255, 0); }
+    }
+
+    .voice-feedback {
+      position: fixed;
+      bottom: 110px; /* Above the button */
+      left: 30px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      padding: 0.8rem 1.2rem;
+      border-radius: 8px;
+      z-index: 998;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      pointer-events: none;
+    }
+
+    .voice-feedback.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .voice-feedback-icon {
+      width: 20px;
+      height: 20px;
+      color: var(--accent-color);
+    }
+    
+    .voice-feedback.listening .voice-feedback-icon {
+      color: var(--secondary-color);
+    }
+
+    /* ------------------- */
+    /* ---    FOOTER   --- */
+    /* ------------------- */
+    .footer {
+      background: #05050a;
+      border-top: 1px solid var(--border-color);
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .footer .logo {
+      margin-bottom: 1rem;
+    }
+
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .social-links a {
+      color: var(--primary-text);
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+    }
+    .social-links a:hover {
+      color: var(--accent-color);
+    }
+    
+    /* ------------------- */
+    /* --- RESPONSIVE --- */
+    /* ------------------- */
+    @media (max-width: 768px) {
+        .navbar nav { gap: 1rem; }
+        .product-detail-content { grid-template-columns: 1fr; }
+        .product-detail-image { max-height: 400px; object-fit: cover; }
+        
+        .voice-control-btn {
+            width: 60px;
+            height: 60px;
+            bottom: 20px;
+            left: 20px;
+        }
+        .voice-control-btn svg {
+            width: 28px;
+            height: 28px;
+        }
+        .voice-feedback {
+            bottom: 90px;
+            left: 20px;
+        }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.29.0",
+    "three": "https://aistudiocdn.com/three@^0.166.1",
+    "three/examples/jsm/loaders/GLTFLoader.js": "https://aistudiocdn.com/three@^0.166.1/examples/jsm/loaders/GLTFLoader.js",
+    "three/": "https://aistudiocdn.com/three@^0.181.0/"
+  }
+}
+</script>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
